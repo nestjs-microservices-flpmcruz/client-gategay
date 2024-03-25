@@ -9,6 +9,14 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const rpcError = exception.getError();
 
+    // por si un ms esta caido
+    if(rpcError.toString().includes('Empty responde')) {
+      return response.status(500).json({
+        statusCode: 500,
+        message: rpcError.toString().substring(0, rpcError.toString().indexOf('(') - 1)
+      })
+    }
+
     if (
       typeof rpcError === 'object' &&
       'status' in rpcError &&
